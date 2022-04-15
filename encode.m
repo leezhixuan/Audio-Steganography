@@ -29,14 +29,14 @@ result = [];
  
 for i = 1 : N
     freq = freqMultiplesOfDF(textInAscii(i));
-    cosWave = 0.012*cos(2*pi*freq*t); % 0.01 so that it isn't obvious to the ear.
+    cosWave = 0.012*cos(2*pi*freq*t); % 0.012 so that it isn't obvious to the ear.
     result = [result cosWave];
 end
 
 startMarkerFreq = startingFreq + (116 * dF); % high enough frequency that will not correspond to any ascii value (max = 95 (~), after normalising)
 endMarkerFreq = startingFreq + (126 * dF); % higher than startMarker Freq to distinguish itself in case sliding window is wonky.
-startMarker = 0.01*cos(2*pi*startMarkerFreq*t); % to mark the start of the embedded message,
-endMarker = 0.01*cos(2*pi*endMarkerFreq*t); % to mark the start of the embedded message
+startMarker = 0.01*cos(2*pi*startMarkerFreq*t); % to mark the start of the embedded message, 0.01 so that it is softer than cosine waves a
+endMarker = 0.01*cos(2*pi*endMarkerFreq*t); % to mark the start of the embedded message.
 
 temp = [startMarker result endMarker];
  
