@@ -1,6 +1,6 @@
 function result = multiplesOfDF(baseFreq, dF, N)
-    % returns an array of N frequencies that are multiples of dF, starting
-    % from baseFreq
+    % returns an array of N consecutive frequencies that are multiples of 
+    % dF, starting from baseFreq
     
     result = [];
     

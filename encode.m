@@ -9,7 +9,6 @@ fclose(fid);
 y = y(:, 1); % converts from stereo to mono
 low_y = lowpass(y, 13000, Fs);
 audioLength = length(low_y);
-% dt = 1/Fs;
  
 N = length(textInAscii); % no. of characters.
 % normalise values
@@ -17,30 +16,27 @@ for i = 1 : N
     textInAscii(i) = textInAscii(i) - 31; % 1st char (space) = index 1, this index corresponds to their frequency
 end
  
-startingFreq = 14000; % in Hertz
-estimatedNoOfCharPerWord = 8;
-maxNoOfChars = 100 * estimatedNoOfCharPerWord;
+startingFreq = 16000; % in Hertz
 segmentLength = 1400; % self-declared.
 dF = Fs/segmentLength;
 fundamentalPeriod = 1 / dF;
 dt = fundamentalPeriod / segmentLength;
- 
-segmentDuration = segmentLength * dt;
+
 t = [0 : dt : fundamentalPeriod - dt];
-freqMultiplesOfDF = multiplesOfDF(16000, dF, 127 - 32 + 1);
+freqMultiplesOfDF = multiplesOfDF(startingFreq, dF, 127 - 32 + 1);
  
 result = [];
  
 for i = 1 : N
     freq = freqMultiplesOfDF(textInAscii(i));
-    cosWave = 0.01*cos(2*pi*freq*t); % 0.01 so that it isn't obvious to the ear.
+    cosWave = 0.012*cos(2*pi*freq*t); % 0.01 so that it isn't obvious to the ear.
     result = [result cosWave];
 end
 
-startMarkerFreq = 16000 + (116 * dF); % high enough frequency that will not correspond to any ascii value (max = 95 (~), after normalising)
-endMarkerFreq = 16000 + (126 * dF); % higher than startMarker Freq to distinguish itself in case sliding window is wonky.
-startMarker = 0.008*cos(2*pi*startMarkerFreq*t); % to mark the start of the embedded message,
-endMarker = 0.008*cos(2*pi*endMarkerFreq*t); % to mark the start of the embedded message
+startMarkerFreq = startingFreq + (116 * dF); % high enough frequency that will not correspond to any ascii value (max = 95 (~), after normalising)
+endMarkerFreq = startingFreq + (126 * dF); % higher than startMarker Freq to distinguish itself in case sliding window is wonky.
+startMarker = 0.01*cos(2*pi*startMarkerFreq*t); % to mark the start of the embedded message,
+endMarker = 0.01*cos(2*pi*endMarkerFreq*t); % to mark the start of the embedded message
 
 temp = [startMarker result endMarker];
  

@@ -1,23 +1,25 @@
 function result = decodeMessage(embedded)
-    segmentLength = 1400; % tried: 1400, 2100
+    segmentLength = 1400; % as per encoding
     dF = 44100 / segmentLength;
     iterations = length(embedded) / segmentLength;
     
     result = "";
-    
-%     disp('hello');
+
     for i = 1 : iterations
-        process = embedded(i + ((i - 1) * segmentLength) : i * segmentLength);
-        fft_process = fft(process, segmentLength);
+        process = embedded(1 + ((i - 1) * segmentLength) : i * segmentLength);
+        division = fix(length(process) / 20); % round towards to the nearest integer towards 0
+        chunk = process(1 + (7*division) : 15*division); % take the central portion of the signal (in time) for fft()
+
         mx = max(abs(fft_process));
         index = find(abs(fft_process) == mx);
         freq = index(1) * dF;
-        if (freq > 19950) % end decoding
+        
+        if (freq > 19950) % end marker met, stop decoding.
             break
         else
-            asciiValue = fix((freq - 16000) / dF);
+            asciiValue = (freq - 16000) / dF;
             if (1 < asciiValue) && (asciiValue < 95)
-                result = result + char(asciiValue + 30); % 30 is experimental
+                result = result + char(asciiValue + 30); % add 30 back to obtain the unnormalised ascii value
             end
         end
     end

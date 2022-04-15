@@ -6,7 +6,7 @@ close all
 
 Fs = 44100;  % sampling frequency
 recObj = audiorecorder(Fs, 16, 1); % 16-bit, 1 channel
-
+ 
 disp('Start recording...');
 recordblocking(recObj, 30);
 disp('End of Recording.');
@@ -14,7 +14,7 @@ y = getaudiodata(recObj);
 
 % spectrogram(y, 1400); % for analysis
 
-high_y = highpass(y, 14200, Fs); 
+high_y = highpass(y, 14000, Fs); 
 
  
 sampleLength = length(high_y);
@@ -48,4 +48,4 @@ for i = 1 : noOfIterations
 end
 
 disp(message);
-% length(char(message))
+% length(char(message)) % to facilitate testing.
